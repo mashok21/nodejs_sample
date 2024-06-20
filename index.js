@@ -1,30 +1,25 @@
-const express = require('express')
-const cors =  require('cors')
-const validator = require('express-validator')
+const express = require("express")
+const cors = require('cors')
+const configureDb = require("./config/db.js")
+// const {checkSchema} = require('express-validator')
+const counterCtrl = require("./app/controller/counter-ctrl.js")
+// const expenseCtrl = require("./app/controller/expense-ctrl.js")
+// const {categoryValidationSchema, categoryIdValidationSchema} = require('./app/validator/category-validator.js')
+// const {expenseValidationSchema, expenseIdValidationSchema} = require('./app/validator/expense-validator.js')
+
 const app = express()
-const port = 4000
-const path = require('path');
-const configureDb = require(path.join(__dirname, 'config', 'Db'));
-const taskCtrl = require('./app/controller/task-ctrl')
-const {taskValidatorSchema, idValidationSchema} = require(path.join(__dirname, 'app','validator', 'task-validator'));
+const port = 3010
 
-
-// middleware
 app.use(express.json())
 app.use(cors())
-
 configureDb()
 
-
-const {checkSchema} = validator
-
-app.get('/api/tasks', taskCtrl.list)
-app.get('/api/tasks/:id', checkSchema(idValidationSchema), taskCtrl.listById)
-app.put('/api/tasks/:id', checkSchema(idValidationSchema), checkSchema(taskValidatorSchema), taskCtrl.update)
-app.post('/api/tasks', checkSchema(taskValidatorSchema), taskCtrl.create)
-app.delete('/api/tasks/:id', checkSchema(idValidationSchema), taskCtrl.remove)
+app.get("/", counterCtrl.home)
+app.post("/counter", counterCtrl.create)
+app.get('/counterslist', counterCtrl.list)
+app.put('/counter/:id', counterCtrl.update)
 
 
 app.listen(port, () => {
-    console.log("server running on port:", port)
+    console.log("server running on port", port)
 })
